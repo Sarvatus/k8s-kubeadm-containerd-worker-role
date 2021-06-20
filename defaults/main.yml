@@ -1,0 +1,22 @@
+---
+# defaults file for kubeadm-containerd-ansible
+
+### Vars for /etc/hosts
+
+ipv4_node: 192.168.0.31
+hostname: cent31
+
+### Additional vars for disable
+disable_firewall: false
+network: weave
+kubeadm_join_command: kubeadm join 192.168.0.30:6443 --token lh4yqu.yn3q0suapys1bolk --discovery-token-ca-cert-hash sha256:05fe4ea8bf3d9b548974f4e0dff4de6b48e1b94a331d14b4f894b4d31e7428ca
+
+
+### Vars for repository settings
+kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch"
+kubernetes_yum_gpg_key:
+  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+docker_baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+docker_gpg_key: https://download.docker.com/linux/centos/gpg

@@ -1,0 +1,14 @@
+---
+- name: Open ports for firewall if variable false
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  with_items:
+    - 6783/tcp
+    - 6783-6784/udp
+  when: not disable_firewall
+
+
+

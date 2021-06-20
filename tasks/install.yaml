@@ -1,0 +1,94 @@
+---
+- name: Set repo for Kubernetes
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    baseurl: "{{ kubernetes_yum_base_url }}"
+    gpgkey: "{{ kubernetes_yum_gpg_key }}"
+
+
+- name: Set repo for Docker - containerd required
+  yum_repository:
+    name: Docker
+    description: Docker repo
+    baseurl: "{{ docker_baseurl }}"
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: "{{ docker_gpg_key }}"
+
+
+- name: Add gpgkeys for docker and kubernetes
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items: 
+    -  "{{ kubernetes_yum_gpg_key }}"
+    -  "{{ docker_gpg_key }}"
+
+- name: Delete podman and buildah
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: 
+    - podman
+    - buildah
+
+- name: Install required packages for kubernetes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - containerd.io
+    - kubelet
+    - kubeadm
+    - kubectl
+  register: install_result
+
+- debug: 
+    msg: "{{ install_result }}"
+
+- name: Enable kubelet and containerd
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - kubelet
+    - containerd
+
+- name: Create directory for containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Generate default config for containerd
+  shell: containerd config default > /etc/containerd/config.toml
+
+- name: Modify config to use cgroup systemd
+  lineinfile:
+    path: /etc/containerd/config.toml
+    line: '             SystemdCgroup = true '
+    insertafter: options
+
+- name: Restart containerd
+  service:
+    name: containerd
+    state: restarted
+
+- name: Add line to hosts
+  lineinfile:
+    path: /etc/hosts
+    insertafter: EOF
+    line: "{{ ipv4_master }}     {{ hostname }}"
+
+- name: Join to cluster
+  shell: "{{ kubeadm_join_command }}"
+  ignore_errors: true
+  
+- debug:
+    msg: "{{ kubeadm_join_command }}"
+

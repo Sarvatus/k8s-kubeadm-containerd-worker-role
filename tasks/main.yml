@@ -1,0 +1,12 @@
+---
+# tasks file for kubeadm-containerd-ansible
+
+- include_tasks: preconfig.yaml
+
+- include_tasks: install.yaml
+
+- include_tasks: weave.yaml
+  when:  network  == "weave"
+
+- include_tasks: calico.yaml
+  when:  network  == "calico"
