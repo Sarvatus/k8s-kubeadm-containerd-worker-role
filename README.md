@@ -27,7 +27,8 @@ Role Variables
 ipv4_node: 192.168.0.30  <--- ip address for your worker node  
 hostname: cent30  <--- hostname for your worker node  
 ```
-#### Login to master node and get join command:   **kubeadm token create --print-join-command**
+#### Login to master node and get join command:  
+**kubeadm token create --print-join-command**
 ```
 kubeadm_join_command: kubeadm join 192.168.0.30:6443 --token lh4yqu.yn3q0suapys1bolk --discovery-token-ca-cert-hash sha256:05fe4ea8bf3d9b548974f4e0dff4de6b48e1b94a331d14b4f894b4d31e7428ca
 ```
