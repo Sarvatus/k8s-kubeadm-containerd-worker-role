@@ -1,35 +1,34 @@
-k8s-kubeadm-containerd-role
+k8s-kubeadm-containerd-worker-role
 =========
 
-An ansible role for installing a k8s based on cri containerd via kubeadm on a Linux CentOS8.  
+An ansible role for installing required stuff for worker node k8s based on cri containerd via kubeadm join option on a Linux CentOS8.  
 Support networks: weave, calico  
-For now only install/setup control plane (master node)
+Setup worker node
     
     
 Requirements
 ------------
 
 - A compatible Linux host. The Kubernetes project provides generic instructions for Linux distributions based on Debian and Red Hat, and those distributions without a package manager.
-- 2 GB or more of RAM per machine (any less will leave little room for your apps).
-- 2 CPUs or more.
+- 1 GB or more of RAM per machine (any less will leave little room for your apps).
+- 1 CPUs or more.
 - Full network connectivity between all machines in the cluster (public or private network is fine).
 - Unique hostname, MAC address, and product_uuid for every node.
 - Certain ports are open on your machines
 
-[Source kubernetes.io](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
   
   
 Role Variables
 --------------
 
-#### Vars for kubeadm config file  generated to /tmp/configkube.yaml
+#### Vars for  /etc/hosts
 ##### For test purposes just change "ipv4_master" and "hostname" var
 ```
 ipv4_master: 192.168.0.30  <--- ip address for your master node  
-dnscluster: cluster.local  
-service_subnet: 10.96.0.0/12  <--- for calico network change for 192.168.0.0/16
 hostname: cent30  <--- hostname for your master node  
 ```
+#### Login to master node and get join command:   kubeadm token create --print-join-command
+kubeadm_join_command: kubeadm join 192.168.0.30:6443 --token lh4yqu.yn3q0suapys1bolk --discovery-token-ca-cert-hash sha256:05fe4ea8bf3d9b548974f4e0dff4de6b48e1b94a331d14b4f894b4d31e7428ca
 
 #### Additional var for disable firewalld - when < false > just creates rule for ports on control plane node: 
 ```
