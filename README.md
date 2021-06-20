@@ -24,17 +24,18 @@ Role Variables
 #### Vars for  /etc/hosts
 ##### For test purposes just change "ipv4_master" and "hostname" var
 ```
-ipv4_master: 192.168.0.30  <--- ip address for your master node  
+ipv4_node: 192.168.0.30  <--- ip address for your master node  
 hostname: cent30  <--- hostname for your master node  
 ```
 #### Login to master node and get join command:   kubeadm token create --print-join-command
+```
 kubeadm_join_command: kubeadm join 192.168.0.30:6443 --token lh4yqu.yn3q0suapys1bolk --discovery-token-ca-cert-hash sha256:05fe4ea8bf3d9b548974f4e0dff4de6b48e1b94a331d14b4f894b4d31e7428ca
-
+```
 #### Additional var for disable firewalld - when < false > just creates rule for ports on control plane node: 
 ```
 disable_firewall: false
 ```
-#### Additional var for set network weave/calico: 
+#### Additional var for set network weave/calico required for port opening: 
 ```
 network: weave
 ```
@@ -56,20 +57,20 @@ Example Playbook
 
 Create play and set yours vars for control plane (master) node:
 ```
-cat <<EOF > example-play-master-k8s.yaml
+cat <<EOF > example-play-worker-k8s.yaml
 - hosts: all
   vars:
-    - hostname: <master_node_hostname>
-    - ipv4_master: <master_node_ip_address>
+    - hostname: <worker_node_hostname>
+    - ipv4_node: <worker_node_ip_address>
     - network: weave
-    - service_subnet: 10.96.0.0/12
+    - kubeadm_join_command: <your_join_command_from_master>
     - disable_firewall: false
   roles:
-    - k8s-kubeadm-containerd-role
+    - k8s-kubeadm-containerd-worker-role
 EOF
 ```
 ```
-ansible-playbook -i "<master_node_ip_address>," example-play-master-k8s.yaml -k
+ansible-playbook -i "<worker_node_ip_address>," example-play-worker-k8s.yaml -k
 ```
 
 License
