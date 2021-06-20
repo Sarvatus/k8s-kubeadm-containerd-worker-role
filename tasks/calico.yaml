@@ -11,6 +11,3 @@
     - 4/tcp
     - 5473/tcp
   when: not disable_firewall
-
-
-

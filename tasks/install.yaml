@@ -9,7 +9,6 @@
     baseurl: "{{ kubernetes_yum_base_url }}"
     gpgkey: "{{ kubernetes_yum_gpg_key }}"
 
-
 - name: Set repo for Docker - containerd required
   yum_repository:
     name: Docker
@@ -20,12 +19,11 @@
     repo_gpgcheck: true
     gpgkey: "{{ docker_gpg_key }}"
 
-
 - name: Add gpgkeys for docker and kubernetes
   rpm_key:
     key: "{{ item }}"
     state: present
-  with_items: 
+  with_items:
     -  "{{ kubernetes_yum_gpg_key }}"
     -  "{{ docker_gpg_key }}"
 
@@ -33,7 +31,7 @@
   package:
     name: "{{ item }}"
     state: absent
-  with_items: 
+  with_items:
     - podman
     - buildah
 
@@ -48,7 +46,7 @@
     - kubectl
   register: install_result
 
-- debug: 
+- debug:
     msg: "{{ install_result }}"
 
 - name: Enable kubelet and containerd
@@ -91,4 +89,3 @@
   
 - debug:
     msg: "{{ kubeadm_join_command }}"
-
