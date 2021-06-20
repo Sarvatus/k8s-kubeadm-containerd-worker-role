@@ -22,10 +22,10 @@ Role Variables
 --------------
 
 #### Vars for  /etc/hosts
-##### For test purposes just change "ipv4_master" and "hostname" var
+
 ```
-ipv4_node: 192.168.0.30  <--- ip address for your master node  
-hostname: cent30  <--- hostname for your master node  
+ipv4_node: 192.168.0.30  <--- ip address for your worker node  
+hostname: cent30  <--- hostname for your worker node  
 ```
 #### Login to master node and get join command:   kubeadm token create --print-join-command
 ```
@@ -55,7 +55,7 @@ docker_gpg_key: https://download.docker.com/linux/centos/gpg
 Example Playbook
 ----------------
 
-Create play and set yours vars for control plane (master) node:
+Create play and set yours vars for worker node:
 ```
 cat <<EOF > example-play-worker-k8s.yaml
 - hosts: all
