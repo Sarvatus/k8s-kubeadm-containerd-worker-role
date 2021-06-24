@@ -54,11 +54,19 @@
 - name: Open ports for firewall if variable false
   firewalld:
     port: "{{ item }}"
-    masquerade: yes
     permanent: yes
     state: enabled
     immediate: yes
   with_items:
     - 10250/tcp
     - 30000-32767/tcp
+  when: not disable_firewall
+
+- name: Add masquerade for public zone firewalld
+  firewalld:
+    permanent: yes
+    state: enabled
+    immediate: yes
+    masquerade: yes
+    zone: public
   when: not disable_firewall
