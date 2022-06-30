@@ -25,6 +25,7 @@ Vars for  /etc/hosts
 
 ```
 ipv4_node: 192.168.0.30  <--- ip address for your worker node  
+ipv4_master: 192.168.0.29 <---- ip address for your control/master node
 hostname: cent30  <--- hostname for your worker node  
 ```
 Login to master node and get join command:  
@@ -66,6 +67,7 @@ cat <<EOF > example-play-worker-k8s.yaml
   vars:
     - hostname: <worker_node_hostname>
     - ipv4_node: <worker_node_ip_address>
+    - ipv4_master: <master_node_ip_address>
     - network: weave
     - kubeadm_join_command: <your_join_command_from_master>
     - disable_firewall: false
