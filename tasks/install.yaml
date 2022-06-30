@@ -77,12 +77,6 @@
     name: containerd
     state: restarted
 
-- name: Add line to hosts
-  lineinfile:
-    path: /etc/hosts
-    insertafter: EOF
-    line: "{{ ipv4_master }}     {{ hostname }}"
-
 - name: Join to cluster
   shell: "{{ kubeadm_join_command }}"
   ignore_errors: true
